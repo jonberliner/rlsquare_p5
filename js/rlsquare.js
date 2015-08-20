@@ -2,7 +2,6 @@ var containerName = 'rlsquare';
 var s = function(p) {
   var wcontainer = document.getElementById(containerName).parentNode.clientWidth;
   var hcontainer = document.getElementById(containerName).parentNode.clientHeight;
-  var params;  // params we're optimizing to determing the full sketch
   var tInPass;  // how far through this sigmoid pass we are
   var tTotalPass;
   var hsv1, hsv2, pColor1;  // ingredients needed to blend into col
@@ -10,6 +9,16 @@ var s = function(p) {
   var FRAMERATE = 30;
   var forwardPass = true;  // if we're on forward or backward pass through colors
 
+  var params ={};  // params we're optimizing to determing the full sketch
+  params.h1 = null;
+  params.s1 = null;
+  params.v1 = null;
+  params.h2 = null;
+  params.s2 = null;
+  params.v2 = null;
+  params.tforward = null;
+  params.tbackward = null;
+  params.steepness = null;
   ////// EVENT LISTENERS
   p.setup = function() {  // onInit
     var mycanvas = p.createCanvas(wcontainer, hcontainer);
@@ -22,13 +31,11 @@ var s = function(p) {
   };
 
   p.draw = function() { // onFrame
-    p.background(0);
-    p.fill(255);
-
+    console.log('p.draw was called!')
     tInPass += 1/FRAMERATE;  // frame2second
     if(tInPass>=tTotalPass){
       forwardPass = !forwardPass;
-      tTotalPass = forwardPass ? params.forward : params.backward;
+      tTotalPass = forwardPass ? params.tforward : params.tbackward;
       tInPass = 0.;  // reset pass timer
     }
 
@@ -53,25 +60,24 @@ var s = function(p) {
 
   ////// SUBROUTINES (don't return things, not modular)
   function setupRLSquare(params){
-    tInPass = 0;
+    tInPass = 0.;
     pColor1 = 0.;
-    col = makeColor(params, pColor1);
+    hsv1 = [params.h1, params.s1, params.v1];
+    hsv2 = [params.h2, params.s2, params.v2];
+    col = makeColor(hsv1, hsv2, pColor1);
     p.background(col['h'], col['s'], col['v']);  // set square color
   }
 
   function updateColor(){
     pColor1 = calculatePercentColorOne(tInPass, tTotalPass, params.steepness);
     if( !forwardPass ){ pColor1 = 1. - pColor1; }
-    var hsv1 = [params.h1, params.s1, params.v1];
-    var hsv2 = [params.h2, params.s2, params.v2];
     col = makeColor(hsv1, hsv2, pColor1);
     p.background(col['h'], col['s'], col['v']);  // set square color
   }
 
   function getNewParams(){  //FIXME: need to make pass params from backend with ajax
-    var params = [];
-    for(var i=0; i<10; i++){
-    params.push(Math.random());
+    for(var key in params){
+      params[key] = Math.random();
     }
     // TODO: ajax stuff started below
     // params = $.ajax(myRoute), {
