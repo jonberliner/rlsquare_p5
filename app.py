@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-# from flask.ext.pymongo import PyMongo
 
 app = Flask(__name__)
 # mongo = PyMongo(app)
@@ -13,6 +12,10 @@ def init():
 
 @app.route('/getParams', methods=['POST', 'GET'])
 def rlsquare():
+    params = getParams()
+    return params
+
+def getParams():
     params = db.params.find_one()  # get random set of params
     return params
 
