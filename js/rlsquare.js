@@ -117,6 +117,18 @@ var s = function(p) {
   function time(){
       return new Date().getTime();
   }
+
+  function rand(lo, hi){
+      if(typeof hi == 'undefined'){
+        if(typeof lo == 'undefined'){
+          lo = 0.; hi = 1.;  // if no params, assumed [0,1] range
+        } else {
+          hi = lo; lo = 0;  // if 1 param, assumed [0, lo] range
+        }
+      }
+      var range = hi-lo;
+      return (Math.random() * range) + lo;
+  }
 };  // end s
 
 var myp5 = new p5(s, containerName);
