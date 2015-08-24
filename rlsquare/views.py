@@ -1,5 +1,5 @@
 from rlsquare import app
-from flask import render_template, request
+from flask import render_template, request, jsonify
 from flask.ext.pymongo import PyMongo
 from rlsquare_gp import model, draw
 
@@ -16,6 +16,9 @@ def init():
 @app.route('/getParams', methods=['POST', 'GET'])
 def rlsquare():
     params = getParams()
+    # FIXME: actually a placeholder.  should return json'd dict of params like below:
+    # resp = {'paramname': paramval}
+    # return jsonify(**resp)
     return render_template('stage.html')
 
 def getParams():
