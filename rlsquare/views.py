@@ -1,12 +1,11 @@
 from rlsquare import app
 from flask import render_template, request
 from flask.ext.pymongo import PyMongo
-import test
+from rlsquare_gp import model, draw
 
 ### ROUTES
 @app.route('/')
 def init():
-    test.helloWorld()
     return render_template('stage.html')
 
 
